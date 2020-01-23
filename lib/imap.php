@@ -8,8 +8,6 @@
  * See the COPYING-README file.
  */
 
-use OCA\user_external\imap\imap_rcube;
-
 /**
  * User authentication against an IMAP mail server
  *
@@ -87,21 +85,19 @@ class OC_User_IMAP extends \OCA\user_external\Base {
 					$groups[] = $pieces[1];
 		}
 
-		$rcube = new imap_rcube();
+		$protocol = $this->sslmode ? "imaps" : "imap";
+		$url = "{$protocol}://{$this->mailbox}:{$this->port}";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
-		$params = ["port"=>$this->port, "timeout"=>10];
-
-		$params["ssl_mode"] = $this->sslmode ? $this->sslmode : null;
-		$params["force_caps"] = false;
-		$canconnect = $rcube->connect(
-					$this->mailbox,
-					$username,
-					$password,
-					$params
-		);
+		$canconnect = curl_exec($ch);
+		$info = curl_getinfo($ch);
+		curl_close($ch);
 
 		if($canconnect) {
- 			$rcube->closeConnection();
 			$uid = mb_strtolower($uid);
 			$this->storeUser($uid, $groups);
 			return $uid;
