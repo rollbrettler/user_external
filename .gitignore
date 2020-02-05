@@ -6,5 +6,3 @@ tests/clover.xml
 
 # packaged app
 build/artifacts
-
-.envrc
