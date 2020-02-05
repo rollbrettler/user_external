@@ -103,7 +103,7 @@ class OC_User_IMAP extends \OCA\user_external\Base {
 			return $uid;
 		} else {
 			OC::$server->getLogger()->error(
-				'ERROR: Could not connect via roundcube lib: '.$rcube->error,
+				'ERROR: Could not connect to imap server via curl: '.curl_error($ch),
 				['app' => 'user_external']
 			);
 		}
