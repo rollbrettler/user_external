@@ -90,6 +90,7 @@ class OC_User_IMAP extends \OCA\user_external\Base {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 
